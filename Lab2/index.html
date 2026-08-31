@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="An interactive student lab for exploring frequency distributions and graphs.">
+  <title>Lab 2: Visual Detective — Frequency Distributions &amp; Graphs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Employee Work Experience Study</p>
+      <h1>Lab 2: <span>Visual Detective</span></h1>
+      <p class="subtitle">Frequency Distributions &amp; Graphs</p>
+      <p class="mission">Organize the evidence. Build the picture. Decide what it means.</p>
+    </div>
+  </header>
+
+  <button id="questionsToggle" class="questions-toggle" aria-controls="questions" aria-expanded="false">View Assignment Questions</button>
+  <div class="layout">
+    <main id="workspace">
+      <section class="card case-card" aria-labelledby="case-title">
+        <div class="section-heading"><span class="step">01</span><div><p class="kicker">Begin your investigation</p><h2 id="case-title">Reopen your case</h2></div></div>
+        <div class="notice"><strong>Use the same Case Code from Lab 1.</strong> The same code recreates the same 30 employees and values. Everything happens in your browser; the code is not stored or sent anywhere.</div>
+        <div class="case-controls">
+          <label for="caseCode">Case Code <span>Example: 4827-SJ</span></label>
+          <div class="button-row"><input id="caseCode" autocomplete="off" maxlength="30" placeholder="Enter your Lab 1 Case Code"><button id="generate" class="primary">Generate Dataset</button></div>
+        </div>
+        <p id="caseInfo" class="case-info" aria-live="polite">Enter your Case Code to unlock the investigation tools.</p>
+      </section>
+
+      <section class="card" aria-labelledby="coding-title">
+        <div class="section-heading"><span class="step">02</span><div><p class="kicker">Know the evidence</p><h2 id="coding-title">Variable coding</h2></div></div>
+        <div class="coding-grid">
+          <div><strong>Employee ID</strong><span>E01–E30; identifier</span></div><div><strong>Department</strong><span>Operations, Sales, HR, IT, Finance</span></div>
+          <div><strong>Work Arrangement</strong><span>On-Site, Hybrid, Remote</span></div><div><strong>Education Level</strong><span>High School, Associate, Bachelor's, Master's+</span></div>
+          <div><strong>Years with Organization</strong><span>Years employed</span></div><div><strong>Job Satisfaction</strong><span>1 = very dissatisfied; 10 = very satisfied</span></div>
+          <div><strong>Productivity Score</strong><span>Supervisor performance score, 0–100</span></div><div><strong>Absence Days</strong><span>Days absent in the past 12 months</span></div>
+          <div><strong>Weekly Hours</strong><span>Typical hours worked per week</span></div><div><strong>Annual Salary</strong><span>Annual salary in U.S. dollars</span></div>
+        </div>
+      </section>
+
+      <section class="card locked" id="dataSection" aria-labelledby="data-title">
+        <div class="section-heading"><span class="step">03</span><div><p class="kicker">Inspect the records</p><h2 id="data-title">Employee dataset</h2></div></div>
+        <div class="toolbar"><button id="downloadCsv" disabled>Download CSV</button><span>30 employees · 9 study variables</span></div>
+        <div class="table-wrap"><table id="dataTable"><thead></thead><tbody><tr><td class="empty">Generate your dataset to view the employee records.</td></tr></tbody></table></div>
+      </section>
+
+      <section class="card locked" id="frequencySection" aria-labelledby="freq-title">
+        <div class="section-heading"><span class="step">04</span><div><p class="kicker">Organize the evidence</p><h2 id="freq-title">Frequency lab</h2></div></div>
+        <div class="tool-grid">
+          <div class="tool-panel"><h3>Categorical frequency table</h3><label for="categoricalVar">Variable</label><select id="categoricalVar" disabled></select><button id="makeCategorical" disabled>Build Frequency Table</button><div id="categoricalResults" class="results" aria-live="polite"></div></div>
+          <div class="tool-panel"><h3>Grouped quantitative distribution</h3><label for="quantitativeVar">Variable</label><select id="quantitativeVar" disabled></select><label for="frequencyClasses">Number of classes: <output id="frequencyClassValue">6</output></label><input id="frequencyClasses" type="range" min="4" max="8" value="6" disabled><button id="makeGrouped" disabled>Build Grouped Distribution</button><div id="groupedResults" class="results" aria-live="polite"></div></div>
+        </div>
+      </section>
+
+      <section class="card locked" id="graphSection" aria-labelledby="graph-title">
+        <div class="section-heading"><span class="step">05</span><div><p class="kicker">Build the visual</p><h2 id="graph-title">Graph builder</h2></div></div>
+        <p class="neutral-note">The tool will build the graph you request. It will not judge whether that graph is an appropriate choice for the variable.</p>
+        <div class="graph-controls">
+          <label for="graphVar">Variable<select id="graphVar" disabled></select></label>
+          <label for="graphType">Graph type<select id="graphType" disabled><option value="bar">Bar chart</option><option value="pie">Pie chart</option><option value="histogram">Histogram</option><option value="polygon">Frequency polygon</option></select></label>
+          <label for="graphClasses">Classes (quantitative graphs)<span class="range-line"><input id="graphClasses" type="range" min="4" max="8" value="6" disabled><output id="graphClassValue">6</output></span></label>
+        </div>
+        <div class="button-row"><button id="buildGraph" class="primary" disabled>Generate Graph</button><button id="downloadGraph" disabled>Download Graph Image</button></div>
+        <p id="graphMessage" class="graph-message" aria-live="polite"></p>
+        <div class="canvas-wrap"><canvas id="chart" width="900" height="520" role="img" aria-label="Generated graph"></canvas></div>
+        <div id="histogramTable" class="results"></div>
+      </section>
+    </main>
+
+    <aside id="questions" class="questions" aria-label="Assignment Questions">
+      <div class="questions-head"><div><p class="eyebrow">Your field notes</p><h2>Assignment Questions</h2></div><button id="questionsClose" aria-label="Close assignment questions">×</button></div>
+      <label class="working-label" for="workingPart">Working on:<select id="workingPart"><option value="part1">Part 1 — From Raw Data to Frequencies</option><option value="part2">Part 2 — Build the Visual</option><option value="part3">Part 3 — Read the Distribution</option><option value="part4">Part 4 — Change the Picture</option><option value="part5">Part 5 — Visual Judgment</option></select></label>
+      <div class="accordion">
+        <details id="part1" open><summary><span>Part 1</span>From Raw Data to Frequencies</summary><div><p>Select one categorical and one quantitative variable.</p><h3>Categorical variable</h3><p>Report categories, frequencies, and percentages. What does the distribution tell you? Use at least one frequency or percentage as evidence.</p><h3>Quantitative variable</h3><ol><li>Where are observations most concentrated?</li><li>Are any intervals unusually common or uncommon?</li><li>What can you see that was difficult to recognize in the raw data?</li></ol><p>Use specific frequencies, percentages, or intervals as evidence.</p></div></details>
+        <details id="part2"><summary><span>Part 2</span>Build the Visual</summary><div><p>Select three variables representing different types of data. For each:</p><ol><li>Choose and generate a graph.</li><li>Identify the variable and graph.</li><li>Explain why the graph is appropriate.</li><li>Describe the most important information it communicates.</li></ol></div></details>
+        <details id="part3"><summary><span>Part 3</span>Read the Distribution</summary><div><p>Select one quantitative variable and examine its distribution. Consider concentration, symmetry or skew, gaps, clusters, unusually high or low observations, and surprises.</p><p>Support your interpretation with specific evidence. What can the shape reveal that a single descriptive statistic might miss?</p></div></details>
+        <details id="part4"><summary><span>Part 4</span>Change the Picture</summary><div><p>For the same quantitative variable, create two histograms using different numbers of classes.</p><ol><li>What changed in the appearance?</li><li>What became easier or harder to see?</li><li>Did the underlying data change?</li><li>Which version is more useful, and why?</li><li>How can display decisions influence interpretation?</li></ol></div></details>
+        <details id="part5"><summary><span>Part 5</span>Visual Judgment</summary><div><p>Select one graph to present to organizational leadership.</p><ol><li>What important finding does it show? Use specific evidence.</li><li>Why does this graph communicate effectively?</li><li>What might someone incorrectly conclude, and why is the graph insufficient for that conclusion?</li><li>What additional information or analysis would help?</li></ol></div></details>
+      </div>
+      <div class="submit-note"><strong>What to submit</strong><p>Submit one document in Canvas with Parts 1–5. Include your Case Code and Verification Code and the requested frequency information and graphs.</p></div>
+    </aside>
+  </div>
+  <div id="scrim" class="scrim"></div>
+  <footer>Visual Detective · Student Lab · Your work remains on your device</footer>
+  <script src="app.js"></script>
+</body>
+</html>
