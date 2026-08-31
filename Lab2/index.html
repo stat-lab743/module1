@@ -66,8 +66,8 @@
       <section class="card locked" id="frequencySection" aria-labelledby="freq-title">
         <div class="section-heading"><span class="step">04</span><div><p class="kicker">Organize the evidence</p><h2 id="freq-title">Frequency lab</h2></div></div>
         <div class="tool-grid">
-          <div class="tool-panel"><h3>Categorical frequency table</h3><label for="categoricalVar">Variable</label><select id="categoricalVar" disabled></select><button id="makeCategorical" disabled>Build Frequency Table</button><div id="categoricalResults" class="results" aria-live="polite"></div></div>
-          <div class="tool-panel"><h3>Grouped quantitative distribution</h3><label for="quantitativeVar">Variable</label><select id="quantitativeVar" disabled></select><label for="frequencyClasses">Number of classes: <output id="frequencyClassValue">6</output></label><input id="frequencyClasses" type="range" min="4" max="8" value="6" disabled><button id="makeGrouped" disabled>Build Grouped Distribution</button><div id="groupedResults" class="results" aria-live="polite"></div></div>
+          <div class="tool-panel"><h3>Categorical frequency table</h3><label for="categoricalVar">Variable</label><select id="categoricalVar" disabled></select><button id="makeCategorical" disabled>Build Frequency Table</button><button id="copyCategorical" disabled>Copy Table for Word</button><div id="categoricalResults" class="results" aria-live="polite"></div></div>
+          <div class="tool-panel"><h3>Grouped quantitative distribution</h3><label for="quantitativeVar">Variable</label><select id="quantitativeVar" disabled></select><label for="frequencyClasses">Number of classes: <output id="frequencyClassValue">6</output></label><input id="frequencyClasses" type="range" min="4" max="8" value="6" disabled><button id="makeGrouped" disabled>Build Grouped Distribution</button><button id="copyGrouped" disabled>Copy Table for Word</button><div id="groupedResults" class="results" aria-live="polite"></div></div>
         </div>
       </section>
 
@@ -79,7 +79,7 @@
           <label for="graphType">Graph type<select id="graphType" disabled><option value="bar">Bar chart</option><option value="pie">Pie chart</option><option value="histogram">Histogram</option><option value="polygon">Frequency polygon</option></select></label>
           <label for="graphClasses">Classes (quantitative graphs)<span class="range-line"><input id="graphClasses" type="range" min="4" max="8" value="6" disabled><output id="graphClassValue">6</output></span></label>
         </div>
-        <div class="button-row"><button id="buildGraph" class="primary" disabled>Generate Graph</button><button id="downloadGraph" disabled>Download Graph Image</button></div>
+        <div class="button-row"><button id="buildGraph" class="primary" disabled>Generate Graph</button><button id="copyGraph" disabled>Copy Graph for Word</button><button id="downloadGraph" disabled>Download Graph Image</button></div>
         <p id="graphMessage" class="graph-message" aria-live="polite"></p>
         <div class="canvas-wrap"><canvas id="chart" width="900" height="520" role="img" aria-label="Generated graph"></canvas></div>
         <div id="histogramTable" class="results"></div>
