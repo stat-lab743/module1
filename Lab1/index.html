@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lab 1: Data Detective</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#workspace">Skip to investigation workspace</a>
+<main class="wrap">
+  <header>
+    <div class="eyebrow">DESCRIPTIVE STATISTICS LAB</div>
+    <h1>Lab 1: Data Detective</h1>
+    <p class="lead">Explore an individualized Employee Work Experience Study and decide what the data tell you.</p>
+  </header>
+
+  <div class="workspace-layout">
+    <div id="workspace" class="workspace" tabindex="-1">
+      <section class="card">
+        <h2>Generate Your Case</h2>
+        <p>Enter your assigned Case Code. The same code will always reproduce the same dataset.</p>
+        <div class="controls">
+          <label>Case Code <input id="caseCode" maxlength="30" placeholder="e.g., AB123"></label>
+          <button id="generate">Generate Dataset</button>
+          <button id="download" disabled>Download CSV</button>
+        </div>
+        <div id="caseInfo" class="caseinfo" aria-live="polite"></div>
+      </section>
+
+      <section class="card">
+        <h2>Scenario</h2>
+        <p>A midsized organization surveyed 30 employees as part of an internal study of employee satisfaction and work experiences. The organization wants to better understand its workforce before deciding what questions deserve further investigation.</p>
+        <p>Your assignment is to explore the dataset and determine what it tells you about the organization's workforce.</p>
+      </section>
+
+      <section class="card">
+        <h2>Variable Guide</h2>
+        <div class="tablewrap"><table><thead><tr><th>Variable</th><th>Coding / Description</th></tr></thead><tbody>
+          <tr><td>Employee ID</td><td>Anonymous identifier E01–E30</td></tr>
+          <tr><td>Department</td><td>Operations, Sales, HR, IT, or Finance</td></tr>
+          <tr><td>Work Arrangement</td><td>On-Site, Hybrid, or Remote</td></tr>
+          <tr><td>Education Level</td><td>High School, Associate, Bachelor's, Master's+</td></tr>
+          <tr><td>Years with Organization</td><td>Number of years employed by the organization</td></tr>
+          <tr><td>Job Satisfaction</td><td>1–10; 1 = very dissatisfied, 10 = very satisfied. Hint: do not automatically assume ordinal.</td></tr>
+          <tr><td>Productivity Score</td><td>0–100 supervisor-provided performance score</td></tr>
+          <tr><td>Absence Days</td><td>Number of days absent in the previous 12 months</td></tr>
+          <tr><td>Weekly Hours</td><td>Typical hours worked per week</td></tr>
+          <tr><td>Annual Salary</td><td>Annual salary in dollars</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section class="card">
+        <h2>Your Dataset</h2>
+        <p class="muted">Generate your case to display the 30 employees.</p>
+        <div class="tablewrap"><table id="dataTable"><thead></thead><tbody></tbody></table></div>
+      </section>
+
+      <section class="card">
+        <h2>Analysis Lab</h2>
+        <p>Use these tools if you wish. The lab calculates statistics, but <strong>you must decide which statistics are appropriate and what they mean.</strong></p>
+        <div class="grid2">
+          <div>
+            <h3>Explore One Variable</h3>
+            <label>Variable <select id="oneVar"></select></label>
+            <button id="analyzeOne" disabled>Calculate Statistics</button>
+            <div id="oneResults" class="results"></div>
+          </div>
+          <div>
+            <h3>Compare Groups</h3>
+            <label>Quantitative variable <select id="compareVar"></select></label>
+            <label>Group by <select id="groupVar"></select></label>
+            <button id="compare" disabled>Compare Groups</button>
+            <div id="groupResults" class="results"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="questions-sidebar" aria-label="Assignment questions">
+      <details class="assignment-shell" open>
+        <summary>View Assignment Questions</summary>
+        <div class="assignment-panel">
+          <h2>Assignment Questions</h2>
+          <p class="sidebar-help">Open a part to view its questions while you work.</p>
+
+          <details class="question-part" open>
+            <summary>Part 1: Understand the Data</summary>
+            <div class="question-content">
+              <p>Select <strong>four variables</strong>. For each, identify its level of measurement, explain whether the mean, median, or mode is appropriate, and identify an appropriate measure of variability. Explain <em>why</em> your choices are appropriate.</p>
+            </div>
+          </details>
+
+          <details class="question-part">
+            <summary>Part 2: Describe the Employees</summary>
+            <div class="question-content">
+              <p>Select <strong>three quantitative variables</strong>. For each, calculate the mean, median, range, variance, and standard deviation. Then explain which statistic or statistics provide the most useful description of each variable and why.</p>
+            </div>
+          </details>
+
+          <details class="question-part">
+            <summary>Part 3: Investigate Something Interesting</summary>
+            <div class="question-content">
+              <p>Explore the dataset and identify <strong>one pattern, difference, unusual result, or observation</strong> that deserves further investigation. Provide numerical evidence. You may investigate work arrangement, satisfaction, productivity, salary, absence, hours worked, group differences, or another pattern you discover. You are not expected to establish cause and effect.</p>
+            </div>
+          </details>
+
+          <details class="question-part">
+            <summary>Part 4: Statistical Judgment</summary>
+            <div class="question-content">
+              <ol>
+                <li>Based on your analysis, make one recommendation for something the organization should investigate further. Explain what evidence led to your recommendation.</li>
+                <li>Identify one observation that could potentially have a large influence on a statistical conclusion. Explain what makes it unusual, which statistic or conclusion it could affect, and why its influence should be considered. Do not automatically remove an observation simply because it is unusual.</li>
+              </ol>
+            </div>
+          </details>
+
+          <section class="submit-note" aria-labelledby="submit-heading">
+            <h3 id="submit-heading">What to Submit</h3>
+            <p>Submit one document in Canvas containing your answers to Parts 1–4. Include your <strong>Case Code</strong> and <strong>Verification Code</strong>. You do not need to submit the CSV unless your instructor asks for it.</p>
+          </section>
+        </div>
+      </details>
+    </aside>
+  </div>
+
+  <footer>Data Detective • Individualized descriptive statistics lab</footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
