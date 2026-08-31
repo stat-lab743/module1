@@ -45,6 +45,12 @@
           <div class="button-row"><input id="caseCode" autocomplete="off" maxlength="30" placeholder="Enter your Lab 1 Case Code"><button id="generate" class="primary">Generate Dataset</button></div>
         </div>
         <p id="caseInfo" class="case-info" aria-live="polite">Enter your Case Code to unlock the investigation tools.</p>
+        <div id="verificationPanel" class="notice" hidden>
+          <strong>Dataset verification</strong>
+          <p>Case Code: <strong id="displayCaseCode"></strong><br>Verification Code: <strong id="displayVerificationCode"></strong></p>
+          <button id="copyCodes" type="button">Copy Codes for Submission</button>
+          <p><small>The Verification Code should match the code produced by Lab 1 when the same Case Code is used.</small></p>
+        </div>
       </section>
 
       <section class="card" aria-labelledby="coding-title">
