@@ -1,65 +1,118 @@
-(function () {
-  "use strict";
-  const QUANT = ["Years with Organization", "Job Satisfaction", "Productivity Score", "Absence Days", "Weekly Hours", "Annual Salary"];
-  const CATEG = ["Department", "Work Arrangement", "Education Level"];
-  const ALL = [...CATEG, ...QUANT];
-  const COLORS = ["#0b6b69", "#e9aa3c", "#407a9e", "#c65d45", "#74578e", "#79a15b", "#d88eaa", "#59737c"];
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="An interactive student lab for exploring frequency distributions and graphs.">
+  <title>Lab 2: Visual Detective — Frequency Distributions &amp; Graphs</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Keep assignment questions in the normal page flow at every screen size. */
+    .questions { position: static !important; top: auto !important; inset: auto !important; transform: none !important; max-height: none !important; overflow: visible !important; }
+    .questions-toggle, #questionsClose, .scrim { display: none !important; }
+    .assignment-shell > summary { display: none; }
+    .assignment-shell { border: 0; background: transparent; }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 0; }
+      .questions { position: static; inset: auto; width: auto; max-height: none; overflow: visible; transform: none; grid-row: 1; margin-bottom: 18px; padding: 0; }
+      .assignment-shell { background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
+      .assignment-shell > summary { display: block; cursor: pointer; padding: 16px 48px 16px 18px; font-weight: 800; color: var(--teal); position: relative; list-style: none; }
+      .assignment-shell > summary::-webkit-details-marker { display: none; }
+      .assignment-shell > summary::after { content: '+'; position: absolute; right: 18px; top: 11px; font-size: 1.55rem; }
+      .assignment-shell[open] > summary::after { content: '−'; }
+      .assignment-panel { padding: 20px; border-top: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Employee Work Experience Study</p>
+      <h1>Lab 2: <span>Visual Detective</span></h1>
+      <p class="subtitle">Frequency Distributions &amp; Graphs</p>
+      <p class="mission">Organize the evidence. Build the picture. Decide what it means.</p>
+    </div>
+  </header>
 
-  // This entire generator is intentionally identical to Lab 1's generator.
-  function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
-  function rng(seed){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
-  function normal(r){let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
-  const pick=(r,a)=>a[Math.floor(r()*a.length)],clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),round=(x,d=0)=>Number(x.toFixed(d));
-  function generate(code){code=code.trim().toUpperCase();const seed=hash("DD1|"+code),r=rng(seed);const patterns=[
-    {id:"SAT_ABS"},{id:"SAT_PROD"},{id:"REMOTE_SAT"},{id:"REMOTE_PROD"},{id:"DEPT_SAL"},{id:"TENURE_SAL"},{id:"EDU_SAL"},{id:"HOURS_PROD"},{id:"NULL_WORK"}
-  ];let p1=patterns[Math.floor(r()*patterns.length)],p2;do{p2=patterns[Math.floor(r()*patterns.length)]}while(p2.id===p1.id);const selected=[p1,p2];
-  const depts=["Operations","Sales","HR","IT","Finance"],works=["On-Site","Hybrid","Remote"],edus=["High School","Associate","Bachelor's","Master's+"];
-  const deptBase={Operations:52000,Sales:57000,HR:55000,IT:72000,Finance:67000},eduAdd={"High School":0,"Associate":3500,"Bachelor's":9000,"Master's+":15000};
-  let rows=[];for(let i=1;i<=30;i++){let department=pick(r,depts),work=pick(r,works),education=pick(r,edus),years=round(clamp(5+5*normal(r),0,22),1);let sat=clamp(6.2+1.5*normal(r),1,10);if(selected.some(p=>p.id==="REMOTE_SAT"))sat+=(work==="Remote"?1:work==="On-Site"?-0.5:0.3);sat=round(clamp(sat,1,10),1);let hours=round(clamp(40+4*normal(r),28,55),1);let prod=74+8*normal(r);if(selected.some(p=>p.id==="SAT_PROD"))prod+=(sat-6)*2;if(selected.some(p=>p.id==="REMOTE_PROD"))prod+=(work==="Remote"?5:work==="Hybrid"?2:-2);if(selected.some(p=>p.id==="HOURS_PROD"))prod+=(hours-40)*0.7;prod=round(clamp(prod,35,99),0);let abs=Math.max(0,Math.round(5+3*normal(r)));if(selected.some(p=>p.id==="SAT_ABS"))abs=Math.max(0,Math.round(abs+(6.5-sat)*1.5));if(selected.some(p=>p.id==="NULL_WORK"))abs=Math.max(0,Math.round(5+3*normal(r)));let salary=deptBase[department]+years*1200+eduAdd[education]+normal(r)*5000;if(selected.some(p=>p.id==="TENURE_SAL"))salary+=years*900;if(selected.some(p=>p.id==="DEPT_SAL"))salary+=(department==="IT"?9000:department==="Operations"?-4000:0);if(selected.some(p=>p.id==="EDU_SAL"))salary+=eduAdd[education]*0.6;salary=Math.round(salary/500)*500;rows.push({"Employee ID":"E"+String(i).padStart(2,"0"),"Department":department,"Work Arrangement":work,"Education Level":education,"Years with Organization":years,"Job Satisfaction":sat,"Productivity Score":prod,"Absence Days":abs,"Weekly Hours":hours,"Annual Salary":salary})}
-  const influenceTypes=["salary","absence","productivity"];let inf=pick(r,influenceTypes),idx=Math.floor(r()*rows.length);if(inf==="salary")rows[idx]["Annual Salary"]=Math.round((Math.max(...rows.map(x=>x["Annual Salary"]))+45000+r()*25000)/500)*500;if(inf==="absence")rows[idx]["Absence Days"]=Math.max(...rows.map(x=>x["Absence Days"]))+12+Math.floor(r()*8);if(inf==="productivity")rows[idx]["Productivity Score"]=clamp(Math.min(...rows.map(x=>x["Productivity Score"]))-18,20,45);const verification=(hash(code+"|VERIFY")>>>0).toString(36).toUpperCase().padStart(7,"0").slice(0,4)+"-"+(hash(code+"|V2")>>>0).toString(36).toUpperCase().padStart(4,"0").slice(0,2);return{code,rows,verification}}
+  <button id="questionsToggle" class="questions-toggle" aria-controls="questions" aria-expanded="false">View Assignment Questions</button>
+  <div class="layout">
+    <main id="workspace">
+      <section class="card case-card" aria-labelledby="case-title">
+        <div class="section-heading"><span class="step">01</span><div><p class="kicker">Begin your investigation</p><h2 id="case-title">Reopen your case</h2></div></div>
+        <div class="notice"><strong>Use the same Case Code from Lab 1.</strong> The same code recreates the same 30 employees and values. Everything happens in your browser; the code is not stored or sent anywhere.</div>
+        <div class="case-controls">
+          <label for="caseCode">Case Code <span>Example: 4827-SJ</span></label>
+          <div class="button-row"><input id="caseCode" autocomplete="off" maxlength="30" placeholder="Enter your Lab 1 Case Code"><button id="generate" class="primary">Generate Dataset</button></div>
+        </div>
+        <p id="caseInfo" class="case-info" aria-live="polite">Enter your Case Code to unlock the investigation tools.</p>
+        <div id="verificationPanel" class="notice" hidden>
+          <strong>Dataset verification</strong>
+          <p>Case Code: <strong id="displayCaseCode"></strong><br>Verification Code: <strong id="displayVerificationCode"></strong></p>
+          <button id="copyCodes" type="button">Copy Codes for Submission</button>
+          <p><small>The Verification Code should match the code produced by Lab 1 when the same Case Code is used.</small></p>
+        </div>
+      </section>
 
-  const $ = id => document.getElementById(id);
-  let current = null, lastGraph = null;
-  const fmt = (v,k) => k === "Annual Salary" ? "$" + Math.round(v).toLocaleString() : Number.isInteger(v) ? String(v) : Number(v).toFixed(1);
-  const escapeHtml = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  function addOptions(el, values){el.innerHTML="";values.forEach(v=>el.add(new Option(v,v)))}
-  function enableLab(on){["downloadCsv","categoricalVar","quantitativeVar","frequencyClasses","makeCategorical","makeGrouped","graphVar","graphType","graphClasses","buildGraph"].forEach(id=>$(id).disabled=!on)}
-  function renderDataset(rows){const keys=Object.keys(rows[0]);$("dataTable").querySelector("thead").innerHTML="<tr>"+keys.map(k=>`<th>${escapeHtml(k)}</th>`).join("")+"</tr>";$("dataTable").querySelector("tbody").innerHTML=rows.map(row=>"<tr>"+keys.map(k=>`<td>${k==="Annual Salary"?"$"+row[k].toLocaleString():escapeHtml(row[k])}</td>`).join("")+"</tr>").join("")}
-  function counts(variable){const map=new Map;current.rows.forEach(r=>map.set(String(r[variable]),(map.get(String(r[variable]))||0)+1));const order=variable==="Education Level"?["High School","Associate","Bachelor's","Master's+"]:[...map.keys()].sort();return order.filter(x=>map.has(x)).map(label=>({label,count:map.get(label)}))}
-  function categoricalTable(variable){const data=counts(variable),n=current.rows.length;return `<table><thead><tr><th>${escapeHtml(variable)}</th><th>Frequency</th><th>Percentage</th></tr></thead><tbody>${data.map(x=>`<tr><td>${escapeHtml(x.label)}</td><td>${x.count}</td><td>${(100*x.count/n).toFixed(1)}%</td></tr>`).join("")}</tbody><tfoot><tr><th>Total</th><th>${n}</th><th>100.0%</th></tr></tfoot></table>`}
-  function niceStep(raw){const p=10**Math.floor(Math.log10(raw||1)),f=raw/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
-  function grouped(variable,classCount){const vals=current.rows.map(r=>Number(r[variable])),min=Math.min(...vals),max=Math.max(...vals);let width=niceStep((max-min)/classCount);if(width===0)width=1;let start=Math.floor(min/width)*width;while(start+width*classCount<=max)width=niceStep(width*1.01);const bins=[];for(let i=0;i<classCount;i++){const lo=start+i*width,hi=lo+width;bins.push({lo,hi,mid:(lo+hi)/2,count:0})}vals.forEach(v=>{let i=Math.floor((v-start)/width);i=Math.max(0,Math.min(classCount-1,i));bins[i].count++});return{bins,n:vals.length,variable,width}}
-  function intervalLabel(b,k,i,last){const digits=b.lo%1||b.hi%1?1:0;const lo=fmt(Number(b.lo.toFixed(digits)),k),hi=fmt(Number(b.hi.toFixed(digits)),k);return `${lo} to ${hi}${i===last?" (inclusive)":""}`}
-  function groupedTable(g){let cum=0;return `<table><thead><tr><th>Class interval</th><th>Frequency</th><th>Percentage</th><th>Cumulative frequency</th></tr></thead><tbody>${g.bins.map((b,i)=>{cum+=b.count;return `<tr><td>${intervalLabel(b,g.variable,i,g.bins.length-1)}</td><td>${b.count}</td><td>${(100*b.count/g.n).toFixed(1)}%</td><td>${cum}</td></tr>`}).join("")}</tbody><tfoot><tr><th>Total</th><th>${g.n}</th><th>100.0%</th><th>${g.n}</th></tr></tfoot></table>`}
-  function downloadCsv(){const keys=Object.keys(current.rows[0]),text=[keys.join(","),...current.rows.map(row=>keys.map(k=>'"'+String(row[k]).replaceAll('"','""')+'"').join(","))].join("\n");downloadBlob(new Blob([text],{type:"text/csv"}),`VisualDetective_${safeCode()}.csv`)}
-  function safeCode(){return current.code.replace(/[^A-Z0-9_-]/g,"_")}
-  function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+      <section class="card" aria-labelledby="coding-title">
+        <div class="section-heading"><span class="step">02</span><div><p class="kicker">Know the evidence</p><h2 id="coding-title">Variable coding</h2></div></div>
+        <div class="coding-grid">
+          <div><strong>Employee ID</strong><span>E01–E30; identifier</span></div><div><strong>Department</strong><span>Operations, Sales, HR, IT, Finance</span></div>
+          <div><strong>Work Arrangement</strong><span>On-Site, Hybrid, Remote</span></div><div><strong>Education Level</strong><span>High School, Associate, Bachelor's, Master's+</span></div>
+          <div><strong>Years with Organization</strong><span>Years employed</span></div><div><strong>Job Satisfaction</strong><span>1 = very dissatisfied; 10 = very satisfied</span></div>
+          <div><strong>Productivity Score</strong><span>Supervisor performance score, 0–100</span></div><div><strong>Absence Days</strong><span>Days absent in the past 12 months</span></div>
+          <div><strong>Weekly Hours</strong><span>Typical hours worked per week</span></div><div><strong>Annual Salary</strong><span>Annual salary in U.S. dollars</span></div>
+        </div>
+      </section>
 
-  function canvasSetup(){const canvas=$("chart"),dpr=Math.max(1,window.devicePixelRatio||1),cssW=900,cssH=520;canvas.width=cssW*dpr;canvas.height=cssH*dpr;canvas.style.aspectRatio=cssW+" / "+cssH;const ctx=canvas.getContext("2d");ctx.scale(dpr,dpr);ctx.fillStyle="#fff";ctx.fillRect(0,0,cssW,cssH);ctx.font="14px system-ui";ctx.textBaseline="middle";return{ctx,w:cssW,h:cssH}}
-  function title(ctx,text,w){ctx.fillStyle="#182532";ctx.font="700 22px Georgia";ctx.textAlign="center";ctx.fillText(text,w/2,32);ctx.font="13px system-ui";ctx.fillStyle="#5c6b75";ctx.fillText(`Case ${current.code} · n = 30`,w/2,57)}
-  function wrapLabel(ctx,text,x,y,max){const words=String(text).split(" ");let lines=[""];words.forEach(word=>{const trial=(lines.at(-1)+" "+word).trim();if(ctx.measureText(trial).width>max&&lines.at(-1))lines.push(word);else lines[lines.length-1]=trial});lines.slice(0,2).forEach((line,i)=>ctx.fillText(line,x,y+i*15))}
-  function axes(ctx,w,h,maxY,labels){const L=74,R=24,T=82,B=98,W=w-L-R,H=h-T-B;ctx.strokeStyle="#87979b";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L,T);ctx.lineTo(L,T+H);ctx.lineTo(L+W,T+H);ctx.stroke();ctx.textAlign="right";ctx.fillStyle="#5c6b75";ctx.font="12px system-ui";const ticks=Math.max(1,Math.ceil(maxY));for(let i=0;i<=5;i++){const val=Math.round(ticks*i/5),y=T+H-H*i/5;ctx.fillText(val,L-10,y);ctx.strokeStyle="#e4e8e7";ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(L+W,y);ctx.stroke()}ctx.textAlign="center";labels.forEach((lab,i)=>wrapLabel(ctx,lab,L+W*(i+.5)/labels.length,T+H+20,W/labels.length-8));return{L,T,W,H,B}}
-  function drawBars(variable,data,isHistogram){const{ctx,w,h}=canvasSetup();title(ctx,`${isHistogram?"Histogram":"Bar Chart"}: ${variable}`,w);const labels=data.map(x=>x.label),max=Math.max(...data.map(x=>x.count),1),a=axes(ctx,w,h,max,labels),slot=a.W/data.length,gap=isHistogram?0:Math.min(22,slot*.2);data.forEach((x,i)=>{const bh=a.H*x.count/max,bx=a.L+i*slot+gap/2,by=a.T+a.H-bh;ctx.fillStyle=COLORS[i%COLORS.length];ctx.fillRect(bx,by,slot-gap,bh);ctx.fillStyle="#182532";ctx.font="700 13px system-ui";ctx.textAlign="center";ctx.fillText(x.count,bx+(slot-gap)/2,by-11)});ctx.save();ctx.translate(18,a.T+a.H/2);ctx.rotate(-Math.PI/2);ctx.fillText("Frequency",0,0);ctx.restore()}
-  function drawPolygon(variable,g){const{ctx,w,h}=canvasSetup();title(ctx,`Frequency Polygon: ${variable}`,w);const labels=g.bins.map((b,i)=>intervalLabel(b,variable,i,g.bins.length-1)),max=Math.max(...g.bins.map(x=>x.count),1),a=axes(ctx,w,h,max,labels),pts=g.bins.map((b,i)=>({x:a.L+a.W*(i+.5)/g.bins.length,y:a.T+a.H-a.H*b.count/max,count:b.count}));ctx.strokeStyle=COLORS[0];ctx.lineWidth=4;ctx.lineJoin="round";ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();pts.forEach(p=>{ctx.fillStyle="#fff";ctx.strokeStyle=COLORS[0];ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle="#182532";ctx.textAlign="center";ctx.font="700 13px system-ui";ctx.fillText(p.count,p.x,p.y-16)})}
-  function drawPie(variable,data){const{ctx,w,h}=canvasSetup();title(ctx,`Pie Chart: ${variable}`,w);const total=data.reduce((s,x)=>s+x.count,0),cx=315,cy=288,r=175;let angle=-Math.PI/2;data.forEach((x,i)=>{const next=angle+2*Math.PI*x.count/total;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,angle,next);ctx.closePath();ctx.fillStyle=COLORS[i%COLORS.length];ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=3;ctx.stroke();angle=next});ctx.textAlign="left";ctx.font="14px system-ui";data.forEach((x,i)=>{const y=155+i*48;ctx.fillStyle=COLORS[i%COLORS.length];ctx.fillRect(570,y-9,18,18);ctx.fillStyle="#182532";ctx.fillText(`${x.label} — ${x.count} (${(100*x.count/total).toFixed(1)}%)`,600,y)})}
-  function buildGraph(){lastGraph=null;$("copyGraph").disabled=true;const variable=$("graphVar").value,type=$("graphType").value,classes=Number($("graphClasses").value),isQuant=QUANT.includes(variable);$("graphMessage").textContent="";$("histogramTable").innerHTML="";if((type==="histogram"||type==="polygon")&&!isQuant){$("graphMessage").textContent="This graph requires numerical values, so it cannot be constructed from the selected variable.";$("downloadGraph").disabled=true;return}if((type==="bar"||type==="pie")&&isQuant){$("graphMessage").textContent="To construct this graph, the numerical values are treated as distinct categories. You must decide whether that display is useful."}if(type==="bar")drawBars(variable,counts(variable),false);if(type==="pie")drawPie(variable,counts(variable));if(type==="histogram"||type==="polygon"){const g=grouped(variable,classes),data=g.bins.map((b,i)=>({label:intervalLabel(b,variable,i,g.bins.length-1),count:b.count}));type==="histogram"?drawBars(variable,data,true):drawPolygon(variable,g);$("histogramTable").innerHTML=`<h3>Class intervals and frequencies</h3>${groupedTable(g)}`}lastGraph={variable,type,classes};$("downloadGraph").disabled=false}
-  function downloadGraph(){$("chart").toBlob(blob=>blob&&downloadBlob(blob,`VisualDetective_${safeCode()}_${lastGraph.type}_${lastGraph.variable.replaceAll(" ","-")}.png`),"image/png")}
-  async function copyTable(resultsId,buttonId){const table=$(resultsId).querySelector("table");if(!table)return;const rows=[...table.rows].map(row=>[...row.cells].map(cell=>cell.innerText.trim()).join("\t")).join("\n");try{if(navigator.clipboard&&window.ClipboardItem){const html=new Blob([table.outerHTML],{type:"text/html"}),plain=new Blob([rows],{type:"text/plain"});await navigator.clipboard.write([new ClipboardItem({"text/html":html,"text/plain":plain})])}else{await navigator.clipboard.writeText(rows)}const button=$(buttonId),old=button.textContent;button.textContent="Copied — paste into Word";setTimeout(()=>button.textContent=old,2200)}catch(error){$("graphMessage").textContent="Your browser blocked copying. Select the table manually, or try a current version of Chrome or Edge."}}
-  async function copyGraph(){try{const blob=await new Promise(resolve=>$("chart").toBlob(resolve,"image/png"));if(!blob||!navigator.clipboard||!window.ClipboardItem)throw new Error("Image clipboard unavailable");await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);const button=$("copyGraph"),old=button.textContent;button.textContent="Copied — paste into Word";setTimeout(()=>button.textContent=old,2200)}catch(error){$("graphMessage").textContent="Your browser blocked image copying. Use Download Graph Image, then insert the PNG into Word."}}
-  function openQuestions(open){$("questions").classList.toggle("open",open);$("scrim").classList.toggle("open",open);document.body.classList.toggle("questions-open",open);$("questionsToggle").setAttribute("aria-expanded",String(open));if(open)$("questionsClose").focus()}
+      <section class="card locked" id="dataSection" aria-labelledby="data-title">
+        <div class="section-heading"><span class="step">03</span><div><p class="kicker">Inspect the records</p><h2 id="data-title">Employee dataset</h2></div></div>
+        <div class="toolbar"><button id="downloadCsv" disabled>Download CSV</button><span>30 employees · 9 study variables</span></div>
+        <div class="table-wrap"><table id="dataTable"><thead></thead><tbody><tr><td class="empty">Generate your dataset to view the employee records.</td></tr></tbody></table></div>
+      </section>
 
-  addOptions($("categoricalVar"),CATEG);addOptions($("quantitativeVar"),QUANT);addOptions($("graphVar"),ALL);
-  $("generate").addEventListener("click",()=>{const code=$("caseCode").value.trim();if(!code){$("caseInfo").textContent="Please enter your Lab 1 Case Code.";return}current=generate(code);renderDataset(current.rows);enableLab(true);$("caseInfo").innerHTML=`Case Code: <strong>${escapeHtml(current.code)}</strong> &nbsp; · &nbsp; Verification Code: <strong>${current.verification}</strong>`;$("categoricalResults").innerHTML="";$("groupedResults").innerHTML="";$("histogramTable").innerHTML="";$("graphMessage").textContent="";["copyCategorical","copyGrouped","copyGraph","downloadGraph"].forEach(id=>$(id).disabled=true);$("dataSection").scrollIntoView({behavior:"smooth",block:"start"})});
-  $("caseCode").addEventListener("keydown",e=>{if(e.key==="Enter")$("generate").click()});
-  $("downloadCsv").addEventListener("click",downloadCsv);
-  $("makeCategorical").addEventListener("click",()=>{$("categoricalResults").innerHTML=categoricalTable($("categoricalVar").value);$("copyCategorical").disabled=false});
-  $("makeGrouped").addEventListener("click",()=>{$("groupedResults").innerHTML=groupedTable(grouped($("quantitativeVar").value,Number($("frequencyClasses").value)));$("copyGrouped").disabled=false});
-  $("copyCategorical").addEventListener("click",()=>copyTable("categoricalResults","copyCategorical"));
-  $("copyGrouped").addEventListener("click",()=>copyTable("groupedResults","copyGrouped"));
-  $("frequencyClasses").addEventListener("input",()=>$("frequencyClassValue").value=$("frequencyClasses").value);
-  $("graphClasses").addEventListener("input",()=>$("graphClassValue").value=$("graphClasses").value);
-  $("buildGraph").addEventListener("click",()=>{buildGraph();if(lastGraph)$("copyGraph").disabled=false});$("copyGraph").addEventListener("click",copyGraph);$("downloadGraph").addEventListener("click",downloadGraph);
-  $("questionsToggle").addEventListener("click",()=>openQuestions(true));$("questionsClose").addEventListener("click",()=>openQuestions(false));$("scrim").addEventListener("click",()=>openQuestions(false));
-  $("workingPart").addEventListener("change",e=>{document.querySelectorAll(".accordion details").forEach(d=>d.open=d.id===e.target.value);$(e.target.value).scrollIntoView({behavior:"smooth",block:"nearest"})});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")openQuestions(false)});
-})();
+      <section class="card locked" id="frequencySection" aria-labelledby="freq-title">
+        <div class="section-heading"><span class="step">04</span><div><p class="kicker">Organize the evidence</p><h2 id="freq-title">Frequency lab</h2></div></div>
+        <div class="tool-grid">
+          <div class="tool-panel"><h3>Categorical frequency table</h3><label for="categoricalVar">Variable</label><select id="categoricalVar" disabled></select><button id="makeCategorical" disabled>Build Frequency Table</button><button id="copyCategorical" disabled>Copy Table for Word</button><div id="categoricalResults" class="results" aria-live="polite"></div></div>
+          <div class="tool-panel"><h3>Grouped quantitative distribution</h3><label for="quantitativeVar">Variable</label><select id="quantitativeVar" disabled></select><label for="frequencyClasses">Number of classes: <output id="frequencyClassValue">6</output></label><input id="frequencyClasses" type="range" min="4" max="8" value="6" disabled><button id="makeGrouped" disabled>Build Grouped Distribution</button><button id="copyGrouped" disabled>Copy Table for Word</button><div id="groupedResults" class="results" aria-live="polite"></div></div>
+        </div>
+      </section>
+
+      <section class="card locked" id="graphSection" aria-labelledby="graph-title">
+        <div class="section-heading"><span class="step">05</span><div><p class="kicker">Build the visual</p><h2 id="graph-title">Graph builder</h2></div></div>
+        <p class="neutral-note">The tool will build the graph you request. It will not judge whether that graph is an appropriate choice for the variable.</p>
+        <div class="graph-controls">
+          <label for="graphVar">Variable<select id="graphVar" disabled></select></label>
+          <label for="graphType">Graph type<select id="graphType" disabled><option value="bar">Bar chart</option><option value="pie">Pie chart</option><option value="histogram">Histogram</option><option value="polygon">Frequency polygon</option></select></label>
+          <label for="graphClasses">Classes (quantitative graphs)<span class="range-line"><input id="graphClasses" type="range" min="4" max="8" value="6" disabled><output id="graphClassValue">6</output></span></label>
+        </div>
+        <div class="button-row"><button id="buildGraph" class="primary" disabled>Generate Graph</button><button id="copyGraph" disabled>Copy Graph for Word</button><button id="downloadGraph" disabled>Download Graph Image</button></div>
+        <p id="graphMessage" class="graph-message" aria-live="polite"></p>
+        <div class="canvas-wrap"><canvas id="chart" width="900" height="520" role="img" aria-label="Generated graph"></canvas></div>
+        <div id="histogramTable" class="results"></div>
+      </section>
+    </main>
+
+    <aside id="questions" class="questions" aria-label="Assignment Questions">
+      <details class="assignment-shell" open>
+      <summary>View Assignment Questions</summary>
+      <div class="assignment-panel">
+      <div class="questions-head"><div><p class="eyebrow">Your field notes</p><h2>Assignment Questions</h2></div><button id="questionsClose" aria-label="Close assignment questions">×</button></div>
+      <label class="working-label" for="workingPart">Working on:<select id="workingPart"><option value="part1">Part 1 — From Raw Data to Frequencies</option><option value="part2">Part 2 — Build the Visual</option><option value="part3">Part 3 — Read the Distribution</option><option value="part4">Part 4 — Change the Picture</option><option value="part5">Part 5 — Visual Judgment</option></select></label>
+      <div class="accordion">
+        <details id="part1" open><summary><span>Part 1</span>From Raw Data to Frequencies</summary><div><p>Select one categorical and one quantitative variable.</p><h3>Categorical variable</h3><p>Report categories, frequencies, and percentages. What does the distribution tell you? Use at least one frequency or percentage as evidence.</p><h3>Quantitative variable</h3><ol><li>Where are observations most concentrated?</li><li>Are any intervals unusually common or uncommon?</li><li>What can you see that was difficult to recognize in the raw data?</li></ol><p>Use specific frequencies, percentages, or intervals as evidence.</p></div></details>
+        <details id="part2"><summary><span>Part 2</span>Build the Visual</summary><div><p>Select three variables representing different types of data. For each:</p><ol><li>Choose and generate a graph.</li><li>Identify the variable and graph.</li><li>Explain why the graph is appropriate.</li><li>Describe the most important information it communicates.</li></ol></div></details>
+        <details id="part3"><summary><span>Part 3</span>Read the Distribution</summary><div><p>Select one quantitative variable and examine its distribution. Consider concentration, symmetry or skew, gaps, clusters, unusually high or low observations, and surprises.</p><p>Support your interpretation with specific evidence. What can the shape reveal that a single descriptive statistic might miss?</p></div></details>
+        <details id="part4"><summary><span>Part 4</span>Change the Picture</summary><div><p>For the same quantitative variable, create two histograms using different numbers of classes.</p><ol><li>What changed in the appearance?</li><li>What became easier or harder to see?</li><li>Did the underlying data change?</li><li>Which version is more useful, and why?</li><li>How can display decisions influence interpretation?</li></ol></div></details>
+        <details id="part5"><summary><span>Part 5</span>Visual Judgment</summary><div><p>Select one graph to present to organizational leadership.</p><ol><li>What important finding does it show? Use specific evidence.</li><li>Why does this graph communicate effectively?</li><li>What might someone incorrectly conclude, and why is the graph insufficient for that conclusion?</li><li>What additional information or analysis would help?</li></ol></div></details>
+      </div>
+      <div class="submit-note"><strong>What to submit</strong><p>Submit one document in Canvas with Parts 1–5. Include your Case Code and Verification Code and the requested frequency information and graphs.</p></div>
+      </div>
+      </details>
+    </aside>
+  </div>
+  <div id="scrim" class="scrim"></div>
+  <footer>Visual Detective · Student Lab · Your work remains on your device</footer>
+  <script src="app.js"></script>
+</body>
+</html>
