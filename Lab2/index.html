@@ -7,22 +7,19 @@
   <title>Lab 2: Visual Detective — Frequency Distributions &amp; Graphs</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Keep the desktop question column in the document flow so it cannot cover results. */
-    @media (min-width: 1101px) {
-      .questions { position: static; max-height: none; overflow: visible; }
-    }
-    /* Use the accessible slide-out question panel sooner on narrower screens. */
-    @media (min-width: 901px) and (max-width: 1100px) {
-      .layout { grid-template-columns: 1fr; padding: 0 14px; }
-      .questions-toggle { display: block; }
-      .questions { position: fixed; z-index: 30; inset: 0 0 0 auto; width: min(92vw, 420px); max-height: 100vh; overflow: auto; border-radius: 0; transform: translateX(105%); transition: transform .2s ease; }
-      .questions.open { transform: translateX(0); }
-      #questionsClose { display: block; }
-      .scrim { position: fixed; z-index: 20; inset: 0; background: rgba(9,25,31,.55); }
-      .scrim.open { display: block; }
-      .tool-grid, .graph-controls { grid-template-columns: 1fr; }
-      .coding-grid { grid-template-columns: 1fr; }
-      body.questions-open { overflow: hidden; }
+    /* Match Lab 1: sticky sidebar on desktop; in-flow collapsible panel on small screens. */
+    .questions-toggle, #questionsClose, .scrim { display: none !important; }
+    .assignment-shell > summary { display: none; }
+    .assignment-shell { border: 0; background: transparent; }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 0; }
+      .questions { position: static; inset: auto; width: auto; max-height: none; overflow: visible; transform: none; grid-row: 1; margin-bottom: 18px; padding: 0; }
+      .assignment-shell { background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
+      .assignment-shell > summary { display: block; cursor: pointer; padding: 16px 48px 16px 18px; font-weight: 800; color: var(--teal); position: relative; list-style: none; }
+      .assignment-shell > summary::-webkit-details-marker { display: none; }
+      .assignment-shell > summary::after { content: '+'; position: absolute; right: 18px; top: 11px; font-size: 1.55rem; }
+      .assignment-shell[open] > summary::after { content: '−'; }
+      .assignment-panel { padding: 20px; border-top: 1px solid var(--line); }
     }
   </style>
 </head>
@@ -90,6 +87,9 @@
     </main>
 
     <aside id="questions" class="questions" aria-label="Assignment Questions">
+      <details class="assignment-shell" open>
+      <summary>View Assignment Questions</summary>
+      <div class="assignment-panel">
       <div class="questions-head"><div><p class="eyebrow">Your field notes</p><h2>Assignment Questions</h2></div><button id="questionsClose" aria-label="Close assignment questions">×</button></div>
       <label class="working-label" for="workingPart">Working on:<select id="workingPart"><option value="part1">Part 1 — From Raw Data to Frequencies</option><option value="part2">Part 2 — Build the Visual</option><option value="part3">Part 3 — Read the Distribution</option><option value="part4">Part 4 — Change the Picture</option><option value="part5">Part 5 — Visual Judgment</option></select></label>
       <div class="accordion">
@@ -100,6 +100,8 @@
         <details id="part5"><summary><span>Part 5</span>Visual Judgment</summary><div><p>Select one graph to present to organizational leadership.</p><ol><li>What important finding does it show? Use specific evidence.</li><li>Why does this graph communicate effectively?</li><li>What might someone incorrectly conclude, and why is the graph insufficient for that conclusion?</li><li>What additional information or analysis would help?</li></ol></div></details>
       </div>
       <div class="submit-note"><strong>What to submit</strong><p>Submit one document in Canvas with Parts 1–5. Include your Case Code and Verification Code and the requested frequency information and graphs.</p></div>
+      </div>
+      </details>
     </aside>
   </div>
   <div id="scrim" class="scrim"></div>
