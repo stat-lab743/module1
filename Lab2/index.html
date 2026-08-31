@@ -7,7 +7,8 @@
   <title>Lab 2: Visual Detective — Frequency Distributions &amp; Graphs</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Match Lab 1: sticky sidebar on desktop; in-flow collapsible panel on small screens. */
+    /* Keep assignment questions in the normal page flow at every screen size. */
+    .questions { position: static !important; top: auto !important; inset: auto !important; transform: none !important; max-height: none !important; overflow: visible !important; }
     .questions-toggle, #questionsClose, .scrim { display: none !important; }
     .assignment-shell > summary { display: none; }
     .assignment-shell { border: 0; background: transparent; }
